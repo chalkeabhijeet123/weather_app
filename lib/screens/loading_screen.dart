@@ -1,9 +1,10 @@
-// ignore_for_file: avoid_print
+// ignore_for_file: avoid_print, unnecessary_null_comparison
 
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:weather_app/screens/homepage.dart';
 import 'package:weather_app/widgets/c_button.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 class LadingScreen extends StatefulWidget {
   const LadingScreen({Key? key}) : super(key: key);
@@ -13,25 +14,21 @@ class LadingScreen extends StatefulWidget {
 }
 
 class _LadingScreenState extends State<LadingScreen> {
-  // Position? _currentPosition;
-
   void getLocation() async {
     try {
       Position position = await Geolocator.getCurrentPosition(
           desiredAccuracy: LocationAccuracy.low);
-      // setState(() {
-      //   _currentPosition = position;
-      // });
+
       print('current position: ${position.latitude}, ${position.longitude}');
-      // print(_currentPosition);
       if (position != null) {
         Navigator.push(
           context,
           MaterialPageRoute(
-              builder: (context) => HomePage(
-                    lat: position.latitude,
-                    long: position.longitude,
-                  )),
+            builder: (context) => HomePage(
+              lat: position.latitude,
+              long: position.longitude,
+            ),
+          ),
         );
       }
     } catch (e) {
@@ -42,6 +39,10 @@ class _LadingScreenState extends State<LadingScreen> {
   @override
   void initState() {
     super.initState();
+    Future.delayed(const Duration(milliseconds: 1500), () {
+      // Do something
+      getLocation();
+    });
   }
 
   @override
@@ -51,8 +52,20 @@ class _LadingScreenState extends State<LadingScreen> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
+            Container(
+              padding: const EdgeInsets.all(10),
+              decoration: const BoxDecoration(color: Colors.transparent),
+              child: SvgPicture.asset(
+                'assets/cloudy-day-2.svg',
+                height: 100,
+                width: 100,
+              ),
+            ),
+            const SizedBox(
+              height: 10,
+            ),
             CommonButton(
-              title: 'Get Location',
+              title: 'let\'s Start',
               color: const Color.fromARGB(255, 170, 197, 243),
               onTap: () => getLocation(),
             ),
